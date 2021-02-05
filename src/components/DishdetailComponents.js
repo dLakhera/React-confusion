@@ -1,36 +1,24 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Card, CardImg, CardBody, CardText, CardTitle } from 'reactstrap';
 
 
-class DishDetails extends Component {
-    constructor(props) {
-        super(props);
-        console.log(props);
-        // console.log("DisDetail constructor called");
-        this.state = {
-        }
+function DishDetails(props) {
+    if (props.dish === undefined) {
+        return (
+            <div></div>
+        );
     }
 
-    render() {
-        // console.log("DisDetail render called")
-
-        if (this.props.dish === undefined) {
-            return (
-                <div></div>
-            );
-        }
-
-        else {
-            return (
-                <Card>
-                    <CardImg top src={this.props.dish.image} alt={this.props.dish.name} />
-                    <CardBody>
-                        <CardTitle>{this.props.dish.name}</CardTitle>
-                        <CardText>{this.props.dish.description}</CardText>
-                    </CardBody>
-                </Card>
-            );
-        }
+    else {
+        return (
+            <Card>
+                <CardImg top src={props.dish.image} alt={props.dish.name} />
+                <CardBody>
+                    <CardTitle>{props.dish.name}</CardTitle>
+                    <CardText>{props.dish.description}</CardText>
+                </CardBody>
+            </Card>
+        );
     }
 }
 export default DishDetails;
