@@ -26,7 +26,7 @@ class Header extends Component {
                 <Navbar dark expand="md">
                     <div className="container">
                         <NavbarToggler onClick={this.toggleNav}/>
-                        <NavbarBrand className="mr-auto" href="/"> <img src="./assets/images/logo.png" width="35vw" height="35vh" alt=""/> Abhyuday IIT Bombay </NavbarBrand>
+                        <NavbarBrand className="mr-auto" href="/"> <img src="./assets/images/logo.png" width="35vw" height="35vh" alt=""/> Abhyuday </NavbarBrand>
                         <Collapse isOpen={this.state.isNavOpen} navbar>
                             <Nav navbar className="ml-auto">
                                 <NavItem>
