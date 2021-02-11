@@ -4,15 +4,17 @@ import {
     CardTitle, Breadcrumb, BreadcrumbItem, Modal, ModalHeader, ModalBody, Label, Button
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { COMMENTS } from '../shared/comments'
 import { Row, Col } from 'reactstrap'
-import { LocalForm, Control } from 'react-redux-form';
+import { LocalForm, Control, Errors } from 'react-redux-form';
+
+const required = (val) => val && val.length;
 
 class RenderComments extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            comment: props.comment,
+            comment: props.comments,
+            addComment: props.addComment,
             isModalOpen: false
         }
         this.handleComment = this.handleComment.bind(this);
@@ -27,8 +29,11 @@ class RenderComments extends Component {
 
     handleComment(values) {
         this.toggleModal();
-        console.log("Values connected from form: " + JSON.stringify(values));
-        alert("Values connected from form: " + JSON.stringify(values));
+        var val = JSON.parse(JSON.stringify(values));
+        // val.date = new Date();
+        // console.log(this.state.comment[0].dishId)
+        val.dishId = this.state.comment[0].dishId;
+        this.state.addComment(val.dishId, val.rating, val.author, val.comment); 
         return;
     }
 
@@ -38,17 +43,17 @@ class RenderComments extends Component {
             <>
                 <Card>
                     <CardBody>
-                        <CardTitle className="mx-auto">Comments</CardTitle>
+                        <CardTitle>Comments</CardTitle>
                         {this.state.comment.forEach(element => {
                             dom_Content.push(
-                                <>
-                                    <CardText>{element.comment} ---{element.author}</CardText>
-                                    <CardText>{new Date(element.date).toDateString()}</CardText>
+                                <>  
+                                    <CardText>{element.comment}</CardText>
+                                    <p>~{element.author}, {new Date(element.date).toDateString()}</p>
                                 </>
                             );
                         })}
                         {dom_Content}
-                        <Button outline onClick={this.toggleModal}>Add Comment</Button>
+                        <Button outline onClick={this.toggleModal}>Comment</Button>
                     </CardBody>
                 </Card>
 
@@ -64,7 +69,18 @@ class RenderComments extends Component {
                                     {/* eslint-disable-next-line */}
                                     <Control.text model=".comment" id="comment" name="comment"
                                         placeholder="Write your comment here"
-                                        className="form-control" />
+                                        className="form-control"
+                                        validators={{
+                                            required
+                                        }} />
+                                    <Errors
+                                        className="text-danger"
+                                        model=".comment"
+                                        show="touched"
+                                        messages={{
+                                            required: 'Required'
+                                        }}
+                                    />
                                 </Col>
                             </Row>
                             <Row row className="form-group">
@@ -75,7 +91,34 @@ class RenderComments extends Component {
                                     {/* eslint-disable-next-line */}
                                     <Control.text model=".author" id="author" name="author"
                                         placeholder="Your name"
-                                        className="form-control" />
+                                        className="form-control"
+                                        validators={{
+                                            required
+                                        }} />
+                                    <Errors
+                                        className="text-danger"
+                                        model=".author"
+                                        show="touched"
+                                        messages={{
+                                            required: 'Required'
+                                        }}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row row className="form-group">
+                                <Col md={2}>
+                                    <Label htmlFor="author">Author</Label>
+                                </Col>
+                                <Col md={10}>
+                                    {/* eslint-disable-next-line */}
+                                    <Control.select model=".rating" id="rating" name="rating"
+                                        className="form-control"> 
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    </Control.select>
                                 </Col>
                             </Row>
                             <Button type="submit" value="submit" color="primary">Submit</Button>
@@ -86,8 +129,8 @@ class RenderComments extends Component {
         );
     }
 }
+
 function RenderDish(props) {
-    const comments = COMMENTS;
     return (
         <>
             <div className="container">
@@ -101,7 +144,7 @@ function RenderDish(props) {
                             </CardBody>
                         </Card></div>
                     <div className="col-12 col-md-5 m-1">
-                        <RenderComments comment={comments.filter((comment) => props.dish.id === comment.dishId)} />
+                        <RenderComments comments={props.comments} addComment={props.addComment}/>
                     </div>
                 </div>
             </div>
@@ -131,7 +174,7 @@ function DishDetails(props) {
                     </div>
                 </div>
 
-                <RenderDish dish={props.dish} />
+                <RenderDish dish={props.dish} comments={props.comments} addComment={props.addComment}/>
 
             </div>
         );
