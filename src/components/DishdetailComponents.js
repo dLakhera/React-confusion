@@ -1,33 +1,91 @@
-import React from 'react'
+import React, { Component } from 'react'
 import {
     Card, CardImg, CardText, CardBody,
-    CardTitle, Breadcrumb, BreadcrumbItem
+    CardTitle, Breadcrumb, BreadcrumbItem, Modal, ModalHeader, ModalBody, Label, Button
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { COMMENTS } from '../shared/comments'
+import { Row, Col } from 'reactstrap'
+import { LocalForm, Control } from 'react-redux-form';
 
+class RenderComments extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            comment: props.comment,
+            isModalOpen: false
+        }
+        this.handleComment = this.handleComment.bind(this);
+        this.toggleModal = this.toggleModal.bind(this);
+    };
 
-function RenderComments({ comment }) {
-    // console.log(props.dish.id);
-    var dom_Content = [];
-    return (
-        <Card>
-            <CardBody>
-                <CardTitle className="mx-auto">Comments</CardTitle>
-                {comment.forEach(element => {
-                    dom_Content.push(
-                        <>
-                            <CardText>{element.comment} ---{element.author}</CardText>
-                            <CardText>{new Date(element.date).toDateString()}</CardText>
-                        </>
-                    );
-                })}
-                {dom_Content}
-            </CardBody>
-        </Card>
-    );
+    toggleModal() {
+        this.setState({
+            isModalOpen: !this.state.isModalOpen
+        })
+    }
+
+    handleComment(values) {
+        this.toggleModal();
+        console.log("Values connected from form: " + JSON.stringify(values));
+        alert("Values connected from form: " + JSON.stringify(values));
+        return;
+    }
+
+    render() {
+        var dom_Content = [];
+        return (
+            <>
+                <Card>
+                    <CardBody>
+                        <CardTitle className="mx-auto">Comments</CardTitle>
+                        {this.state.comment.forEach(element => {
+                            dom_Content.push(
+                                <>
+                                    <CardText>{element.comment} ---{element.author}</CardText>
+                                    <CardText>{new Date(element.date).toDateString()}</CardText>
+                                </>
+                            );
+                        })}
+                        {dom_Content}
+                        <Button outline onClick={this.toggleModal}>Add Comment</Button>
+                    </CardBody>
+                </Card>
+
+                <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+                    <ModalHeader toggle={this.toggleModal}>Login</ModalHeader>
+                    <ModalBody>
+                        <LocalForm onSubmit={(values) => this.handleComment(values)}>
+                            <Row row className="form-group">
+                                <Col md={2}>
+                                    <Label htmlFor="comment">Comment</Label>
+                                </Col>
+                                <Col md={10}>
+                                    {/* eslint-disable-next-line */}
+                                    <Control.text model=".comment" id="comment" name="comment"
+                                        placeholder="Write your comment here"
+                                        className="form-control" />
+                                </Col>
+                            </Row>
+                            <Row row className="form-group">
+                                <Col md={2}>
+                                    <Label htmlFor="author">Author</Label>
+                                </Col>
+                                <Col md={10}>
+                                    {/* eslint-disable-next-line */}
+                                    <Control.text model=".author" id="author" name="author"
+                                        placeholder="Your name"
+                                        className="form-control" />
+                                </Col>
+                            </Row>
+                            <Button type="submit" value="submit" color="primary">Submit</Button>
+                        </LocalForm>
+                    </ModalBody>
+                </Modal>
+            </>
+        );
+    }
 }
-
 function RenderDish(props) {
     const comments = COMMENTS;
     return (
