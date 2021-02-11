@@ -7,22 +7,21 @@ import { Link } from 'react-router-dom';
 import { COMMENTS } from '../shared/comments'
 
 
-function RenderComments(props) {
-    const comments = COMMENTS;
-    console.log(props.dish.id);
+function RenderComments({ comment }) {
+    // console.log(props.dish.id);
     var dom_Content = [];
     return (
         <Card>
             <CardBody>
-                <CardTitle>Comments</CardTitle>
-                {comments.forEach(element => {
-                    console.log(element.dishId)
-                    
-                    if (element.dishId === props.dish.id) {
-                        dom_Content.push(<CardText>{element.comment}</CardText>);
-                    }
+                <CardTitle className="mx-auto">Comments</CardTitle>
+                {comment.forEach(element => {
+                    dom_Content.push(
+                        <>
+                            <CardText>{element.comment} ---{element.author}</CardText>
+                            <CardText>{new Date(element.date).toDateString()}</CardText>
+                        </>
+                    );
                 })}
-
                 {dom_Content}
             </CardBody>
         </Card>
@@ -30,6 +29,7 @@ function RenderComments(props) {
 }
 
 function RenderDish(props) {
+    const comments = COMMENTS;
     return (
         <>
             <div className="container">
@@ -43,7 +43,7 @@ function RenderDish(props) {
                             </CardBody>
                         </Card></div>
                     <div className="col-12 col-md-5 m-1">
-                        <RenderComments dish = {props.dish}/>
+                        <RenderComments comment={comments.filter((comment) => props.dish.id === comment.dishId)} />
                     </div>
                 </div>
             </div>
